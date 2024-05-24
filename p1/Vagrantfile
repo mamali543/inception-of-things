@@ -1,0 +1,58 @@
+# define vagrant configuration version, and pass the vagrant configu object to the block of code
+# vagrant by default sets up machines to allow passwordless SSH access from the host using an insecure key
+Vagrant.configure("2") do |configu|
+  # configu.vm.synced_folder '/host/path', '/guest/path', SharedFoldersEnableSymlinksCreate: false
+  # configu.vbguest.auto_update = false
+  #define a machine and a block where to configure it
+  configu.vm.define "melkarmi" do |melkarmi|
+    melkarmi.vm.box = "ubuntu/focal64"
+    melkarmi.vm.hostname = "melkarmiS"
+    # melkarmi.vm.network "private_network", ip: "192.168.50.11"
+    melkarmi.vm.network "private_network", ip: "192.168.56.110"
+    melkarmi.vm.provider "virtualbox" do |vb|
+      vb.cpus = 1
+      vb.memory =  "1024"
+    end
+#This machine will act as the control plane of your K3s cluster. The installation script curl -sfL https://get.k3s.io | sh - 
+#will download and install K3s as a server
+    melkarmi.vm.provision "shell", inline: <<-SHELL
+      # using the --node-ip and --tls-san flags when starting K3s on the server to ensure it uses and trusts the correct IP address
+      curl -sfL https://get.k3s.io | sh -s - server \
+      --node-ip=192.168.56.110 \
+      --tls-san=192.168.56.110
+      sudo cat /var/lib/rancher/k3s/server/node-token > /vagrant/node_token
+      sudo touch /vagrant/server_ready
+    SHELL
+#The syntax above is used in Vagrant to define a provisioning script that runs shell commands inside a virtual machine during its setup phase
+#"inline" specifies that the shell commands are provided directly in the Vagrantfile.
+  end
+
+  configu.vm.define "ozakkare" do |ozakkare|
+    ozakkare.vm.box = "ubuntu/focal64"
+    ozakkare.vm.hostname = "ozakkareSW"
+    # ozakkare.vm.network "private_network", ip: "192.168.50.11"
+    ozakkare.vm.network "private_network", ip: "192.168.56.111"
+    ozakkare.vm.provider "virtualbox" do |vb|
+      vb.cpus = 1
+      vb.memory =  "1024"
+    end
+    # Provision K3s on the worker, This machine will join the cluster as a worker node.
+    # It needs the server's URL and token to connect.The token is retrieved from the server's node-token file
+    ozakkare.vm.provision "shell", inline: <<-SHELL
+    echo "Checking if server is ready..."
+
+    while [ ! -f /vagrant/server_ready ]; do sleep 1; done
+      echo "Server is ready, and token is available."
+      K3S_URL=https://192.168.56.110:6443
+      #The token is used to authenticate the node to the Kubernetes API server
+      K3S_TOKEN=$(cat /vagrant/node_token)
+      echo "Using K3S_URL=${K3S_URL}"
+      echo "Using K3S_TOKEN=${K3S_TOKEN}"    
+      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -
+      # Add a delay to ensure k3s is fully up and running before trying to label
+      sleep 30
+      sudo kubectl label node $(hostname) node-role.kubernetes.io/worker=worker --kubeconfig /etc/rancher/k3s/k3s.yaml
+      # curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token) sh -
+    SHELL
+  end
+end
