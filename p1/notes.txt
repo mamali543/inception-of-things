@@ -13,6 +13,7 @@ hashicorp/bionic64:
     This part of the command specifies the base image (or "box") that Vagrant will use to create the virtual machine.
 
 k3s is a lightweight distribution of kubernetes that makes it easy to manipulate clusters.
+    -kubectl is a kubernetes client to interact with and manage the applications in the cluster.
 
 Server (Controller) Installation: When you run curl -sfL https://get.k3s.io | sh - without additional arguments
     on the first machine, it defaults to installing K3s in server mode. This mode sets up the Kubernetes control plane

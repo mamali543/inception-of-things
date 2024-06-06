@@ -1,0 +1,13 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "mamali" do |control|
+      control.vm.box = "ubuntu/focal64"
+      control.vm.hostname = "mamali"
+      control.vm.network "private_network", ip: "192.168.56.112"
+      control.vm.provider "virtualbox" do |vb|
+          vb.cpus = 2
+          vb.memory = "2048"
+      end
+      # Provision with external shell script
+      control.vm.provision "shell", path: "setup.sh"
+  end
+end

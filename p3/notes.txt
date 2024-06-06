@@ -1,0 +1,21 @@
+ArgoCD, CI CD Pipeline
+
+ArgoCD, continious delivery gitops tool for kubernetes
+
+Manifests: YAML files defining Kubernetes resources like Deployments,
+
+Nodes are the physical or virtual machines where Kubernetes runs your workloads
+
+Master Node: Runs the control plane components, including the API server, scheduler,
+ and core resource controllers. This node manages the worker nodes and the Pods within them.
+
+Application:In the context of Kubernetes and Argo CD, an application refers to a set of definitions that describe an
+ application’s resources. Argo CD will manage these resources based on manifests stored in a Git repository. 
+
+Worker Nodes: These nodes run the actual applications in containers. Each worker node has a Kubelet,
+ which is an agent for managing the node and communicating with the Kubernetes control plane.
+
+-sudo k3d cluster create IoT -p "8888:30080"
+ The mapping "8888:30080" allows you to access services running within your Kubernetes cluster (on port 30080)
+ via port 8888 on your local machine. For example, if you have a web application running inside your cluster and
+ it's set to expose port 30080, you can access it by navigating to http://localhost:8888 on your host machine.

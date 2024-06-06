@@ -4,18 +4,19 @@ Vagrant.configure("2") do |configu|
   # configu.vm.synced_folder '/host/path', '/guest/path', SharedFoldersEnableSymlinksCreate: false
   # configu.vbguest.auto_update = false
   #define a machine and a block where to configure it
-  configu.vm.define "melkarmi" do |melkarmi|
-    melkarmi.vm.box = "ubuntu/focal64"
-    melkarmi.vm.hostname = "melkarmiS"
+  configu.vm.define "melkarmiW" do |control|
+    control.vm.box = "ubuntu/focal64"
+    control.vm.hostname = "melkarmiS"
     # melkarmi.vm.network "private_network", ip: "192.168.50.11"
-    melkarmi.vm.network "private_network", ip: "192.168.56.110"
-    melkarmi.vm.provider "virtualbox" do |vb|
+    control.vm.network "private_network", ip: "192.168.56.110"
+    # control.vm.network REDACTED, ip: "192.168.56.110"
+    control.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
       vb.memory =  "1024"
     end
 #This machine will act as the control plane of your K3s cluster. The installation script curl -sfL https://get.k3s.io | sh - 
 #will download and install K3s as a server
-    melkarmi.vm.provision "shell", inline: <<-SHELL
+    control.vm.provision "shell", inline: <<-SHELL
       # using the --node-ip and --tls-san flags when starting K3s on the server to ensure it uses and trusts the correct IP address
       curl -sfL https://get.k3s.io | sh -s - server \
       --node-ip=192.168.56.110 \
@@ -27,18 +28,18 @@ Vagrant.configure("2") do |configu|
 #"inline" specifies that the shell commands are provided directly in the Vagrantfile.
   end
 
-  configu.vm.define "ozakkare" do |ozakkare|
-    ozakkare.vm.box = "ubuntu/focal64"
-    ozakkare.vm.hostname = "ozakkareSW"
+  configu.vm.define "ozakkare" do |control|
+    control.vm.box = "ubuntu/focal64"
+    control.vm.hostname = "ozakkareSW"
     # ozakkare.vm.network "private_network", ip: "192.168.50.11"
-    ozakkare.vm.network "private_network", ip: "192.168.56.111"
-    ozakkare.vm.provider "virtualbox" do |vb|
+    control.vm.network "private_network", ip: "192.168.56.111"
+    control.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
       vb.memory =  "1024"
     end
     # Provision K3s on the worker, This machine will join the cluster as a worker node.
     # It needs the server's URL and token to connect.The token is retrieved from the server's node-token file
-    ozakkare.vm.provision "shell", inline: <<-SHELL
+    control.vm.provision "shell", inline: <<-SHELL
     echo "Checking if server is ready..."
 
     while [ ! -f /vagrant/server_ready ]; do sleep 1; done
@@ -50,9 +51,36 @@ Vagrant.configure("2") do |configu|
       echo "Using K3S_TOKEN=${K3S_TOKEN}"    
       curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -
       # Add a delay to ensure k3s is fully up and running before trying to label
-      sleep 30
-      sudo kubectl label node $(hostname) node-role.kubernetes.io/worker=worker --kubeconfig /etc/rancher/k3s/k3s.yaml
+    #   sleep 30
+    #   sudo kubectl label node $(hostname) node-role.kubernetes.io/worker=worker --kubeconfig /etc/rancher/k3s/k3s.yaml
       # curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token) sh -
     SHELL
   end
 end
+
+# Vagrant.configure("2") do |config|
+#   config.vm.box = "ubuntu/focal64"
+#   config.vm.box_url = "https://vagrantcloud.com/ubuntu/boxes/focal64"
+
+#   config.vm.define "wilS" do |control|
+#       control.vm.hostname = "wilS"
+#       control.vm.network :private_network, ip: "192.168.56.110"
+#       control.vm.provider :virtualbox do |v|
+#           v.customize ["modifyvm", :id, "--name", "wilS"]
+#           v.cpus = 1
+#           v.memory = "1024"
+#       end
+
+#   end
+
+#   config.vm.define "wilSW" do |control|
+#       control.vm.hostname = "wilSW"
+#       control.vm.network :private_network, ip: "192.168.56.111"
+#       control.vm.provider :virtualbox do |v|
+#           v.customize ["modifyvm", :id, "--name", "wilSW"]
+#           v.cpus = 1
+#           v.memory = "1024"
+#       end
+
+#   end
+# end
