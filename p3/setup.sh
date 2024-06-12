@@ -57,10 +57,8 @@ sudo kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.dat
 # we need actually to apply this configuration to configure ArgoCD with this application logic 
 sudo kubectl apply -f /vagrant/deployement/app.yaml
 
+echo -e "${CYAN}SETUP COMPLETED.${NC}"
+
 # make the argocd-server service available locally on port 8080 by portforwarding it to acces it
 sudo kubectl port-forward --address 0.0.0.0 -n argocd svc/argocd-server 8080:443
 # By specifying --address 0.0.0.0, you're allowing external devices (not just localhost) to connect to the forwarded port
-
-
-
-echo -e "${CYAN}SETUP COMPLETED.${NC}"
