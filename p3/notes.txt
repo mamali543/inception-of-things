@@ -1,21 +1,60 @@
-ArgoCD, CI CD Pipeline
+ArgoCD, CI CD Pipeline: set up a fully automated CD pipeline for kubernetes config changes
 
 ArgoCD, continious delivery gitops tool for kubernetes
 
-Manifests: YAML files defining Kubernetes resources like Deployments,
+Manifests: YAML files defining Kubernetes resources like Deployments, services
 
 Nodes are the physical or virtual machines where Kubernetes runs your workloads
 
 Master Node: Runs the control plane components, including the API server, scheduler,
  and core resource controllers. This node manages the worker nodes and the Pods within them.
 
+Worker Nodes: These nodes run the actual applications in containers. Each worker node has a Kubelet,
+ which is an agent for managing the node and communicating with the Kubernetes control plane.
+
+When using Docker images to deploy applications on Kubernetes, like the wil42/playground images you found on Docker Hub,
+ you typically need configuration files like Deployment and Service manifests to manage how these images are run and accessed
+ within your Kubernetes cluster
+
+Kubernetes resources such as Deployments and Services. These resources define and control how your application
+ (in this case, represented by a Docker containerized app) runs and interacts within the Kubernetes environment.
+ The Deployment object is responsible for managing the application instances (pods), and the Service object is used to expose
+ the application to network traffic. Both of these help orchestrate the application's deployment and accessibility in a cluster.
+
+Determining the Need for Deployment and Service YAML Files 
+ Deployment Requirement:
+    Purpose: Ensures that a specified number of pod replicas running your containerized application are up and available at all times.
+        Why Needed: If you want Kubernetes to manage the availability and scaling of wil42/playground application, you need a Deployment.
+
+ Service Requirement:
+    Purpose: Provides a stable interface to access the running containers over a network.
+        Why Needed: If you want to expose your application (wil42/playground) to be accessible either internally within the cluster or externally, you need a Service.
+
 Application:In the context of Kubernetes and Argo CD, an application refers to a set of definitions that describe an
  application’s resources. Argo CD will manage these resources based on manifests stored in a Git repository. 
 
-Worker Nodes: These nodes run the actual applications in containers. Each worker node has a Kubelet,
- which is an agent for managing the node and communicating with the Kubernetes control plane.
+-"replicas" refers to the number of copies of a pod that you want running in your cluster to ensure availability and scalability.
 
 -sudo k3d cluster create IoT -p "8888:30080"
  The mapping "8888:30080" allows you to access services running within your Kubernetes cluster (on port 30080)
  via port 8888 on your local machine. For example, if you have a web application running inside your cluster and
  it's set to expose port 30080, you can access it by navigating to http://localhost:8888 on your host machine.
+
+-Why Port Mapping?
+ In Kubernetes, services inside the cluster (like those running in pods) often listen on specific ports. By default,
+ these ports are only accessible within the cluster network. If you want to access a service from outside the Kubernetes cluster,
+ such as from your own computer or another server, you need a way to expose these services.
+
+-sudo k3d cluster list:
+    list all the clusters managed by k3d on your system
+
+-sudo kubectl get namespaces
+
+-sudo kubectl get pod -n argocd
+-sudo kubectl get svc -n argocd:
+    argocd-server which is accessible in http and https ports
+    we gonna use kubectl portforward to access this service(argocd-server) and make it availbale locally on port 8080
+
+-sudo kubectl get svc:
+    name: kubernetes
+    type: clusterIp

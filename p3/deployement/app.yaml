@@ -1,0 +1,31 @@
+# ArgoCD Configuration, this application component will be created in the same namespace where argocd is running
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-argo-application
+  namespace: argocd
+spec:
+  project: default # Every application belong to a single project, default if unspecified
+
+  # Then two things that we want to configure in every app, first one is the git repo that argocd will connect to and sync it to the ,
+  # and second is the destination or the cluster where argocd will apply the definitions it found in the git repo
+  source:
+    repoURL: https://github.com/mamali543/IOT-mamali.git
+    targetRevision: HEAD  #The last commit in the gitRepo
+    path: dev
+
+  destination:
+    #The adress of the kubernetes api server, our destination cluster is the same where ArgoCD is deployed
+    server: https://kubernetes.default.svc #that's the internal service name of kubernetes api server
+    # when ArgoCD finds the manifest files in which namespace it should apply them?
+    namespace: dev
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  
+  #ArgoCD polls GitRepo every 3 minutes
+    automated:
+      selfHeal: true
+      # prune: true
+
+#we need actually to apply this configuration to configure ArgoCD with this logic 
