@@ -10,8 +10,8 @@ test:
 deploy:
   stage: deploy
   script:
-    - echo "Deploying to Kubernetes..."
-    - kubectl apply -f k8s/deployment.yaml
+    - echo "Deploying to k3s..."
+    - k3s kubectl apply -f app.yaml
   environment:
     name: production
     url: http://localhost

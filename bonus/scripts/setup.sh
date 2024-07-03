@@ -54,7 +54,9 @@ sudo kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.dat
 sudo kubectl apply -f /vagrant/confs/app.yaml
 echo -e "${CYAN}SETUP COMPLETED.${NC}"
 
-sudo kubectl port-forward --address 0.0.0.0 -n argocd svc/argocd-server 8080:443
+# sudo kubectl port-forward --address 0.0.0.0 -n argocd svc/argocd-server 9090:443 &
+nohup sudo kubectl port-forward --address 0.0.0.0 -n argocd svc/argocd-server 9090:443 > /vagrant/logs/port-forward.log 2>&1 &
 
+sleep 5
 # echo -e "${LEMON}==> INSTALLING GITLAB...${NC}"
 

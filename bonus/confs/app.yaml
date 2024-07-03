@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://localhost/mamali543/IOT-mamali.git
+    repoURL: https://github.com/mamali543/IOT-mamali.git
     targetRevision: HEAD
     path: dev
   destination:
