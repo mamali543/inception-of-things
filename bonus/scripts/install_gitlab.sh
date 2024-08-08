@@ -69,8 +69,8 @@ sudo apt-get install -y curl openssh-server ca-certificates tzdata perl -y
 sudo ufw allow http
 sudo ufw allow https
 curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh | sudo bash
-sudo EXTERNAL_URL="https://local.gitlab.com" apt-get install gitlab-ee -y
-sudo gitlab-ctl reconfigure
+sudo EXTERNAL_URL="http://local.gitlab.com" apt-get install gitlab-ee -y
+#sudo gitlab-ctl reconfigure
 
 sudo chown -R git:git /opt/gitlab/embedded/service/gitlab-rails
 sudo chmod -R 755 /opt/gitlab/embedded/service/gitlab-rails

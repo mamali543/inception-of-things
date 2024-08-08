@@ -1,0 +1,26 @@
+apiVersion: apps/v1 # Specifies the version of the Kubernetes API you're using to create this object.
+
+kind: Deployment  #The type of Kubernetes resource you want to create. In this case, Deployment manages a set of replica Pods
+
+metadata: #Metadata about the resource, like its name and labels, which are key-value pairs used for organizing and selecting subsets of objects
+  name: wil-deployment
+  labels:
+      name: wil-playground
+
+spec:
+  replicas: 2  # Number of replicas
+  selector:
+    matchLabels: #Defines how the Deployment finds which Pods to manage. It uses a label selector to find those Pods that match its labels
+      app: wil-playground
+
+  template: #Template for the Pods the deployment manages. It describes the Pod that will be created 
+    metadata:
+      labels:
+        app: wil-playground
+
+    spec:
+      containers:
+      - name: wil-app
+        image: wil42/playground:v1  # Using version 1 or 2 of the image
+        ports: #List of ports to expose from the container
+        - containerPort: 8888  #the port the container is configured to listen to.
