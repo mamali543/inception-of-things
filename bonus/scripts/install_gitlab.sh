@@ -82,4 +82,6 @@ sudo cat /etc/gitlab/initial_root_password | grep "Password"
 echo -e "${BLUE}==> GITLAB INSTALLED.${NC}"
 echo -e "${CYAN}SETUP COMPLETED.${NC}"
 
+sudo kubectl port-forward --address 0.0.0.0 -n argocd svc/argocd-server 9900:443
+
 
