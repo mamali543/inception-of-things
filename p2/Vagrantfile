@@ -1,0 +1,15 @@
+ Vagrant.configure("2") do |config| # Begin configuration block using vagrant version 2
+    config.vm.box = "bento/ubuntu-22.04" # set the base image to use
+    config.vm.define "melkarmiS" do |control| # Start line to define the virtual machine control is a reference to the virtual machine
+      control.vm.hostname = "melkarmiS"
+      control.vm.network "private_network", bridge: "eth1" , ip: "192.168.56.110"
+        control.vm.provider "vmware_desktop" do |vb| # provider block for vmware u can do lot of things here like ressource management , 
+            vb.cpus = 2
+            vb.memory = "2048"
+            vb.vmx["fusion_startup_timeout"] = 300  # Increase timeout
+            end
+        control.vm.provision "shell", path: "scripts/server.sh"
+
+
+end
+end
