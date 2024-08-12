@@ -1,0 +1,20 @@
+Forwarding from 0.0.0.0:9900 -> 8080
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+E0810 14:18:40.411863    8036 portforward.go:385] error copying from local connection to remote stream: read tcp4 192.168.56.112:9900->192.168.56.1:53909: read: connection reset by peer
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+Handling connection for 9900
+E0810 14:32:55.500375    8036 portforward.go:233] lost connection to pod

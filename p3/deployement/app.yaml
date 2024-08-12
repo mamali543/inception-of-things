@@ -26,6 +26,6 @@ spec:
   #ArgoCD polls GitRepo every 3 minutes
     automated:
       selfHeal: true
-      # prune: true
+      prune: true
 
 #we need actually to apply this configuration to configure ArgoCD with this logic 

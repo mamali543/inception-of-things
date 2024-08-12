@@ -3,11 +3,11 @@ Vagrant.configure("2") do |configu|
   # configu.vbguest.auto_update = false
 
   configu.vm.define "melkarmiW" do |control|
-    control.vm.box = "bento/ubuntu-20.04-arm64"
+    control.vm.box = "ubuntu/focal64"
     control.vm.hostname = "melkarmiS"
     control.vm.network "private_network", ip: "192.168.56.110"
     
-    control.vm.provider "vmware_fusion" do |vb|
+    control.vm.provider "virtualbox" do |vb|
         vb.cpus = 1
         vb.memory = "1024"
       end
@@ -23,11 +23,11 @@ Vagrant.configure("2") do |configu|
   end
 
   configu.vm.define "ozakkare" do |control|
-    control.vm.box = "bento/ubuntu-20.04-arm64"
+    control.vm.box = "ubuntu/focal64"
     control.vm.hostname = "ozakkareSW"
     control.vm.network "private_network", ip: "192.168.56.111"
     
-    control.vm.provider "vmware_fusion" do |vb|
+    control.vm.provider "virtualbox" do |vb|
         vb.cpus = 1
         vb.memory = "1024"
       end
@@ -36,6 +36,7 @@ Vagrant.configure("2") do |configu|
       echo "Checking if server is ready..."
       while [ ! -f /vagrant/server_ready ]; do sleep 1; done
       echo "Server is ready, and token is available."
+      # The port 6443 is typically used for the Kubernetes API server, which is a primary component of a Kubernetes cluster that processes API requests,
       K3S_URL=https://192.168.56.110:6443
       K3S_TOKEN=$(cat /vagrant/node_token)
       echo "Using K3S_URL=${K3S_URL}"
