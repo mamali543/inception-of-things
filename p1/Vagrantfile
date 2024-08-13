@@ -2,7 +2,7 @@ Vagrant.configure("2") do |configu|
   # Disable vbguest auto updates, it might cause issues with VirtualBox on M1
   # configu.vbguest.auto_update = false
 
-  configu.vm.define "melkarmiW" do |control|
+  configu.vm.define "melkarmi" do |control|
     control.vm.box = "ubuntu/focal64"
     control.vm.hostname = "melkarmiS"
     control.vm.network "private_network", ip: "192.168.56.110"

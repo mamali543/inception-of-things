@@ -17,3 +17,4 @@ deploy:
     url: http://localhost
   only:
     - main
+``
